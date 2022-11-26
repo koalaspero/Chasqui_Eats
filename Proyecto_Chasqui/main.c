@@ -3,21 +3,43 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>// Booleanos
+#include <limits.h>
+#include <math.h>
 #define MAX 10 /*Numero de elementos en el arreglo*/
 
-int *params;
+int distance(int x1, int y1, int x2, int y2);
+int randProb (int chance);
+bool tossCoin();
+
 int numRestaurantes;
 int numMotorizados;
+int numClientes;
+int clientesAtendidos;
+int clientesNoAtendidos;
+
+int *params;
 int dimension;
 
 struct ElementoGrilla{
-	char name[30];
+	char name[15];
     int posX;
     int posY;
+    bool busy;
+    bool left;
+    int envios;
+    int recorrido;
+};
+
+struct Orden{
+	float valor; 
+	int restaurante;
+	int motorizado;
 };
 
 struct ElementoGrilla *motorizados;
 struct ElementoGrilla *restaurantes;
+struct ElementoGrilla *clientes;
 
 
 void print_help(){
@@ -31,11 +53,69 @@ void print_help(){
 	printf("-h: Muestra un texto de ayuda con informacion de las opciones\n");
 }
 
+int nearestRepartidor(struct ElementoGrilla clie){
+	int minValue = INT_MAX;
+	int motIndex = 0;
+	bool reject = true;
+
+	for(int i = 0; i < numMotorizados; i++){
+		struct ElementoGrilla mot = motorizados[i];
+		int dist = distance(mot.posX,mot.posY,clie.posX,clie.posY);
+		if(dist < minValue){
+			minValue = dist;
+			printf("\n %s y %s : %d \n", mot.name, clie.name, dist);
+			if(!mot.busy || !mot.left){
+				reject = false;
+				motIndex = i;
+			}
+		}
+	}
+
+	if(reject){
+		return -1;
+	}
+
+	return motIndex;
+}
+
+
+
+void cargar_cliente(struct ElementoGrilla *elementos){
+
+	struct ElementoGrilla cliente;
+	char *count;
+
+	asprintf(&count, "%d", (clientesAtendidos+1));
+	strcat(strcpy(cliente.name, "Cliente-"), count);
+	free(count);
+
+	cliente.posX =  rand() % dimension + 1;
+    cliente.posY =  rand() % dimension + 1;
+
+    int restIndex = rand() % (numRestaurantes-1) + 1;
+    struct ElementoGrilla rest = restaurantes[restIndex];
+
+    int motoIndex = nearestRepartidor(rest);
+
+    double orderVal = 100 * ((double)rand() / (double)RAND_MAX);
+    bool cond = randProb(70);
+
+    if(cond && (motoIndex!= -1)){
+    	struct ElementoGrilla mot = motorizados[motoIndex];
+    	printf("\n %s (%d,%d) , transaccion aceptada, %s (%d,%d) %s (%d,%d)\n",cliente.name,cliente.posX,cliente.posY,mot.name,mot.posX,mot.posY,rest.name,rest.posX,rest.posY);
+    	motorizados[motoIndex].envios++;
+    	int toRestaurant = distance(mot.posX,mot.posY,rest.posX,rest.posY);
+    	int toClient = distance(rest.posX,rest.posY,cliente.posX,cliente.posY);
+    	motorizados[motoIndex].recorrido += (toRestaurant + toClient);
+  		motorizados[motoIndex].posX = cliente.posX;
+  		motorizados[motoIndex].posY = cliente.posY;
+    }
+
+}
+
 void cargar_datos(struct ElementoGrilla *elementos, int numElementos,char tipoElemento){
 
 	char *count;	
-
-	// elementos = (struct ElementoGrilla *) malloc(numElementos * sizeof(struct ElementoGrilla));
 
 	for(int i = 0; i < numElementos; i++){
 
@@ -101,13 +181,24 @@ int main(int argc, char **argx){
 		cargar_datos(motorizados, numMotorizados,'M');
 		cargar_datos(restaurantes, numRestaurantes,'R');
 
-		for(int i = 0; i < numRestaurantes; i++){
+		// for(int i = 0; i < numRestaurantes; i++){
 
-		    printf("\n %s en la posicion (%d,%d) \n", restaurantes[i].name, restaurantes[i].posX, restaurantes[i].posY);
+		//     printf("\n %s en la posicion (%d,%d) \n", restaurantes[i].name, restaurantes[i].posX, restaurantes[i].posY);
+		// }
+
+
+		// for(int i = 0; i < numMotorizados; i++){
+
+		//     printf("\n %s en la posicion (%d,%d) \n", motorizados[i].name, motorizados[i].posX, motorizados[i].posY);
+		// }
+
+		if(tossCoin()){
+			cargar_cliente(clientes);
 		}
 
 		free(params);
 		free(motorizados);
 		free(restaurantes);
+		free(clientes);
 	}
 }

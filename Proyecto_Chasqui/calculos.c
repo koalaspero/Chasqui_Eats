@@ -13,7 +13,7 @@ int distance(int x1, int y1, int x2, int y2){
 
 int randProb (int chance) {
     int random = (rand()%100)+1;
-    
+
     return (random <= chance);
 }
 

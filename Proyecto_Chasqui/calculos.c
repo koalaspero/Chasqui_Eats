@@ -20,3 +20,13 @@ int randProb (int chance) {
 bool tossCoin(){
 	return ((rand() % 2) != 0);
 }
+
+int promedio(int *recorridos){
+	int len = sizeof recorridos / sizeof recorridos[0];
+	int sum = 0, avg = 0;
+	for (int i = 0; i < len; i++) {
+		sum += recorridos[i];
+	}
+	avg = sum / len;
+	return avg;
+}

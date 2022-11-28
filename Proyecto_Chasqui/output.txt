@@ -1,0 +1,139 @@
+
+ Grilla de 11x11, 5 restaurantes, intervalo 500 milisegundos, 10 motorizados, 10 kilometros de distancia  
+ Cliente-2 (11,8) , transaccion aceptada, Motorizado-10 (3,1) Restaurante-3 (5,7)
+ Motorizado-10, en espera por comida
+ Cliente-2, Comida lista
+ Cliente-3 (5,10) , transaccion aceptada, Motorizado-10 (11,8) Restaurante-5 (4,11)
+ Motorizado-10, en espera por comida
+ Cliente-3, Comida lista
+ Cliente-5 (5,5) , transaccion aceptada, Motorizado-10 (5,10) Restaurante-2 (6,1)
+ Motorizado-10, en espera por comida
+ Motorizado-10, Comida retirada
+ Cliente-5, Comida lista
+ Cliente-6 (11,3) , transaccion aceptada, Motorizado-10 (5,5) Restaurante-3 (5,7)
+ Motorizado-10, en espera por comida
+ Cliente-6, Comida lista
+ Cliente-7 (5,1) , transaccion aceptada, Motorizado-9 (10,11) Restaurante-5 (4,11)
+ Motorizado-10, Comida retirada
+ Motorizado-9, en espera por comida
+ Motorizado-10, Comida entregada
+ Motorizado-10, En espera por nuevo pedido
+ Motorizado-10, Comida retirada
+ Cliente-7, Comida lista
+ Motorizado-10, Comida entregada
+ Motorizado-10, En espera por nuevo pedido
+ Motorizado-10 0, Me retiro a mi casa
+ Cliente-10 (5,6) , transaccion aceptada, Motorizado-8 (8,5) Restaurante-4 (1,11)
+ Motorizado-10, Comida retirada
+ Motorizado-8, en espera por comida
+ Motorizado-9, Comida retirada
+ Cliente-10, Comida lista
+ Cliente-11 (4,9) , transaccion aceptada, Motorizado-8 (5,6) Restaurante-4 (1,11)
+ Motorizado-10, Comida entregada
+ Motorizado-10, En espera por nuevo pedido
+ Motorizado-8, en espera por comida
+ Cliente-11, Comida lista
+ Cliente-12 (8,9) , transaccion aceptada, Motorizado-10 (11,3) Restaurante-2 (6,1)
+ Motorizado-10, Comida entregada
+ Motorizado-10, En espera por nuevo pedido
+ Motorizado-10 2, Me retiro a mi casa
+ Motorizado-10, en espera por comida
+ Cliente-12, Comida lista
+ Cliente-13 (11,9) , transaccion aceptada, Motorizado-8 (4,9) Restaurante-5 (4,11)
+ Motorizado-8, en espera por comida
+ Cliente-13, Comida lista
+ Motorizado-8, Comida retirada
+ Motorizado-8, Comida retirada
+ Cliente-15 (9,11) , transaccion aceptada, Motorizado-9 (5,1) Restaurante-2 (6,1)
+ Motorizado-8, Comida retirada
+ Motorizado-10, Comida retirada
+ Motorizado-9, en espera por comida
+ Motorizado-9, Comida entregada
+ Motorizado-9, En espera por nuevo pedido
+ Cliente-15, Comida lista
+ Cliente-16 (11,4) , transaccion aceptada, Motorizado-9 (9,11) Restaurante-5 (4,11)
+ Motorizado-8, Comida entregada
+ Motorizado-8, En espera por nuevo pedido
+ Motorizado-9, Comida retirada
+ Motorizado-9, en espera por comida
+ Cliente-16, Comida lista
+ Cliente-17 (10,11) , transaccion aceptada, Motorizado-9 (11,4) Restaurante-5 (4,11)
+ Motorizado-9, en espera por comida
+ Cliente-17, Comida lista
+ Cliente-18 (3,9) , transaccion aceptada, Motorizado-8 (11,9) Restaurante-2 (6,1)
+ Motorizado-8, Comida entregada
+ Motorizado-8, En espera por nuevo pedido
+ Motorizado-8, Comida entregada
+ Motorizado-8, En espera por nuevo pedido
+ Motorizado-8 2, Me retiro a mi casa
+ Motorizado-8, en espera por comida
+ Cliente-18, Comida lista
+ Cliente-19 (5,11) , transaccion aceptada, Motorizado-7 (6,4) Restaurante-2 (6,1)
+ Motorizado-10, Comida entregada
+ Motorizado-10, En espera por nuevo pedido
+ Motorizado-10 4, Me retiro a mi casa
+ Motorizado-9, Comida retirada
+ Motorizado-7, en espera por comida
+ Cliente-19, Comida lista
+ Cliente-20 (4,10) , transaccion aceptada, Motorizado-9 (10,11) Restaurante-4 (1,11)
+ Motorizado-9, en espera por comida
+ Cliente-20, Comida lista
+ Cliente-21 (7,5) , transaccion aceptada, Motorizado-9 (4,10) Restaurante-5 (4,11)
+ Motorizado-9, Comida entregada
+ Motorizado-9, En espera por nuevo pedido
+ Motorizado-9 1, Me retiro a mi casa
+ Motorizado-7, Comida retirada
+ Motorizado-9, en espera por comida
+ Cliente-21, Comida lista
+ Cliente-22 (4,9) , transaccion aceptada, Motorizado-7 (5,11) Restaurante-4 (1,11)
+ Motorizado-9, Comida retirada
+ Motorizado-9, Comida retirada
+ Motorizado-7, en espera por comida
+ Cliente-22, Comida lista
+ Cliente-23 (9,9) , transaccion aceptada, Motorizado-7 (4,9) Restaurante-3 (5,7)
+ Motorizado-8, Comida retirada
+ Motorizado-7, en espera por comida
+ Motorizado-9, Comida entregada
+ Motorizado-9, En espera por nuevo pedido
+ Motorizado-9 2, Me retiro a mi casa
+ Cliente-23, Comida lista
+ Cliente-24 (8,5) , transaccion aceptada, Motorizado-7 (9,9) Restaurante-3 (5,7)
+ Motorizado-7, en espera por comida
+ Motorizado-7, Comida retirada
+ Motorizado-7, Comida retirada
+ Cliente-25 (3,7) , transaccion aceptada, Motorizado-7 (8,5) Restaurante-4 (1,11)
+ Cliente-24, Comida lista
+ Motorizado-9, Comida entregada
+ Motorizado-9, En espera por nuevo pedido
+ Motorizado-9 3, Me retiro a mi casa
+ Motorizado-9, Comida retirada
+ Motorizado-9, Comida entregada
+ Motorizado-9, En espera por nuevo pedido
+ Motorizado-9 5, Me retiro a mi casa
+ Motorizado-7, en espera por comida
+ Cliente-25, Comida lista
+ Motorizado-7, Comida entregada
+ Motorizado-7, En espera por nuevo pedido
+ Motorizado-7, Comida entregada
+ Motorizado-7, En espera por nuevo pedido
+ Motorizado-7 1, Me retiro a mi casa
+ Motorizado-9, Comida entregada
+ Motorizado-9, En espera por nuevo pedido
+ Motorizado-7, Comida entregada
+ Motorizado-7, En espera por nuevo pedido
+ Motorizado-7, Comida retirada
+ Cliente-27 (3,5) , transaccion aceptada, Motorizado-9 (7,5) Restaurante-4 (1,11)
+ Motorizado-8, Comida entregada
+ Motorizado-8, En espera por nuevo pedido
+ Motorizado-8 3, Me retiro a mi casa
+ Motorizado-9, en espera por comida
+
+Terminado
+
+Clientes atendidos: 20
+
+Clientes no atendidos: 6
+
+Promedio Km de recorrido: 32
+
+Motorizados retirados: 10 

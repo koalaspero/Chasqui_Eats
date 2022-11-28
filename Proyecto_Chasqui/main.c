@@ -13,14 +13,15 @@
 int distance(int x1, int y1, int x2, int y2);
 int randProb (int chance);
 bool tossCoin();
+int promedio(int *recorridos);
 
 int numRestaurantes;
 int motorizadosDisponibles;
 int motorizadosRetirados;
 int numMotorizados;
 int numClientes;
-int clientesAtendidos;
-int clientesNoAtendidos;
+int clientesAtendidos = 0;
+int clientesNoAtendidos = 0;
 
 int *params;
 int dimension;
@@ -37,16 +38,25 @@ struct ElementoGrilla{
     int recorrido;
 };
 
-struct Orden{
-	float valor;
-	int restaurante;
-	int motorizado;
-};
+struct moto_thread_args {
+    struct ElementoGrilla cliente;
+    int motoIndex;
+    int restIndex;
+ };
 
 struct ElementoGrilla *motorizados;
 struct ElementoGrilla *restaurantes;
+int *recorridos;
+
+// pthread_mutex_t mutex;
 
 
+/*
+ * Function:  print_help 
+ * --------------------
+ * Mueustra por pantalla informacion acerca del programa
+ *    
+ */
 void print_help(){
     printf("Uso:\n\t ./ejecutable D,K,X,N,Z \n\n");
     printf(" D:\tla ubicación de motorizados, clientes y restaurantes, se define en una grilla de tamaño DxD, donde D es un numero entero entero impar.\n");
@@ -58,6 +68,15 @@ void print_help(){
 	printf("-h: Muestra un texto de ayuda con informacion de las opciones\n");
 }
 
+/*
+ * Function: nearestRepartidor
+ * ----------------------------
+ *   Retorna el indice del motorizado mas cercano y con una distancia menor a la distancia maxima especificada.
+ *
+ *   clie: un objeto que corresponde al cliente que sera atendido 
+ *
+ *   returns: motIndex
+ */
 int nearestRepartidor(struct ElementoGrilla clie){
 	int minValue = INT_MAX;
 	int motIndex = 0;
@@ -69,7 +88,6 @@ int nearestRepartidor(struct ElementoGrilla clie){
 		bool unavailableMot = !mot.busy || !mot.left; 
 		if(dist < maxDist){
 			minValue = dist;
-			// printf("\n %s y %s : %d \n", mot.name, clie.name, dist);
 			if(unavailableMot){
 				reject = false;
 				motIndex = i;
@@ -85,33 +103,55 @@ int nearestRepartidor(struct ElementoGrilla clie){
 	return motIndex;
 }
 
-void envio_motorizado(struct ElementoGrilla cliente, int indexList[]){
-	
-	int motoIndex = indexList[0];
-	int restIndex = indexList[1];
+/*
+ * Function: envio_motorizado
+ * ----------------------------
+ *   Operaciones del motorizado en la realizacion de un pedido.
+ *
+ *   cliente: un objeto que corresponde al cliente que sera atendido 
+ *	 indexList: arreglo con los indices del restaurante y motorizado que atienden al cliente.
+ *
+ */
+void* envio_motorizado(void *moto_args){
+
+	struct moto_thread_args *args = (struct moto_thread_args *) moto_args;
+
+	struct ElementoGrilla cliente = args->cliente;	
+	int motoIndex = args->motoIndex;
+	int restIndex = args->restIndex;
+
+	free(args);
 
 	struct ElementoGrilla mot = motorizados[motoIndex];
 	struct ElementoGrilla rest = restaurantes[restIndex];
 
-	printf("\n %s (%d,%d) , transaccion aceptada, %s (%d,%d) %s (%d,%d)\n",cliente.name,cliente.posX,cliente.posY,mot.name,mot.posX,mot.posY,rest.name,rest.posX,rest.posY);
+	printf(" %s (%d,%d) , transaccion aceptada, %s (%d,%d) %s (%d,%d)\n",cliente.name,cliente.posX,cliente.posY,mot.name,mot.posX,mot.posY,rest.name,rest.posX,rest.posY);
 	
-	motorizados[motoIndex].busy = true;
-	motorizados[motoIndex].envios++;
-
 	int toRestaurant = distance(mot.posX,mot.posY,rest.posX,rest.posY);
-	motorizados[motoIndex].recorrido += toRestaurant;
-	
-	printf(" %s, en espera por comida\n", mot.name);
-	printf(" %s, Comida lista\n", cliente.name);
-	printf(" %s, Comida retirada\n", mot.name);
-	
 	int toClient = distance(rest.posX,rest.posY,cliente.posX,cliente.posY);
-	motorizados[motoIndex].recorrido += toClient;
-	
-	printf(" %s, Comida entregada\n", mot.name);
-	
+
+	// pthread_mutex_lock(&mutex);
+	motorizados[motoIndex].busy = true;
 	motorizados[motoIndex].posX = cliente.posX;
 	motorizados[motoIndex].posY = cliente.posY;
+	sleep(1);
+	motorizados[motoIndex].envios++;
+	// pthread_mutex_unlock(&mutex);
+	
+	printf(" %s, en espera por comida\n", mot.name);
+	sleep(1);
+	printf(" %s, Comida lista\n", cliente.name);
+
+	sleep(toRestaurant);
+	motorizados[motoIndex].recorrido += toRestaurant;
+
+	printf(" %s, Comida retirada\n", mot.name);
+
+	sleep(toClient);
+	motorizados[motoIndex].recorrido += toClient;
+
+	printf(" %s, Comida entregada\n", mot.name);
+
 	motorizados[motoIndex].busy = false;
 	
 	printf(" %s, En espera por nuevo pedido\n", mot.name);
@@ -120,16 +160,24 @@ void envio_motorizado(struct ElementoGrilla cliente, int indexList[]){
 		if(tossCoin()){
 			motorizados[motoIndex].left = true;
 			motorizados[motoIndex].busy = true;
-			printf(" %s %d, Me retiro a mi casa\n", mot.name, mot.envios);
 			motorizadosDisponibles--;
+			recorridos[motorizadosRetirados] = motorizados[motoIndex].recorrido;
 			motorizadosRetirados++;
-			// printf("\n %d \n",motorizadosRetirados);
+			printf(" %s %d, Me retiro a mi casa\n", mot.name, mot.envios);
 		}
 	}
 }
 
 
-
+/*
+ * Function: cargar_cliente
+ * ----------------------------
+ *   Operaciones del hilo que corresponde a un cliente.
+ *
+ *   
+ *	 
+ *
+ */
 void* cargar_cliente(){
 
 	struct ElementoGrilla cliente;
@@ -146,25 +194,38 @@ void* cargar_cliente(){
     struct ElementoGrilla rest = restaurantes[restIndex];
 
     int motoIndex = nearestRepartidor(rest);
-    clientesNoAtendidos++;
-
-    if(motoIndex == -1){
-    	pthread_exit(NULL);
-    }
 
     double orderVal = 100 * ((double)rand() / (double)RAND_MAX);
     bool cond = randProb(70);
 
     if(cond && (motoIndex!= -1)){
-    	clientesNoAtendidos--;
-    	int indexList[] = {motoIndex,restIndex};
-    	envio_motorizado(cliente, indexList);
     	clientesAtendidos++;
-    	// pthread_exit(NULL);
+    	pthread_t moto_t;
+
+    	struct moto_thread_args *args = malloc (sizeof (struct moto_thread_args));
+		args->cliente = cliente;
+		args->motoIndex = motoIndex;
+		args->restIndex = restIndex;
+
+		pthread_create (&moto_t, NULL,envio_motorizado,args);
+    	// envio_motorizado(cliente, indexList);
+    }else{
+    	clientesNoAtendidos++;
     }
 
 }
 
+/*
+ * Function: cargar_datos
+ * ----------------------------
+ *   Carga los motorizados y los restaurantes que se ven implicados durante el programa.
+ *
+ *   
+ *	 elementos: arreglo que se llena de motorizados o restaurantes.
+ *	 numElementos: numero de elementos que se agrega al arreglo.
+ *	 tipoElemento: indicativo para atributos de motorizado o de restaurante.
+ *
+ */
 void cargar_datos(struct ElementoGrilla *elementos, int numElementos,char tipoElemento){
 
 	char *count;
@@ -223,6 +284,13 @@ int main(int argc, char **argx){
 			params[numCount++] = atoi(listNumber);
 			listNumber = strtok(NULL, ",");
 		}
+
+		if(params[0] % 2==0){
+			printf("\nIngrese una dimension impar para la matriz.\n");	
+			free(params);
+			exit(1);
+		}
+
 		printf("\n Grilla de %dx%d, %d restaurantes, intervalo %d milisegundos, %d motorizados, %d kilometros de distancia  \n", params[0],params[0],params[1],params[2],params[3],params[4]);
 
 		numRestaurantes = params[1];
@@ -236,24 +304,37 @@ int main(int argc, char **argx){
 
 		motorizados = (struct ElementoGrilla *) malloc(numMotorizados * sizeof(struct ElementoGrilla));
 		restaurantes = (struct ElementoGrilla *) malloc(numRestaurantes * sizeof(struct ElementoGrilla));
+		recorridos = (int *) malloc(numMotorizados * sizeof(int));
 
 		cargar_datos(motorizados, numMotorizados,'M');
 		cargar_datos(restaurantes, numRestaurantes,'R');
 
+		// pthread_mutex_init(&mutex,NULL);
+		pthread_t moto_t[numMotorizados];
+		pthread_t res_t[numRestaurantes];
+		int i;
+
 		while(motorizadosDisponibles>0){
-			sleep(interval);
 			pthread_t client_t;
-			
+			sleep(interval);
 			if(tossCoin()){
-				cargar_cliente();
+				sleep(2);
 				pthread_create(&client_t, NULL, &cargar_cliente, NULL);
-				pthread_join(client_t, NULL);
+				// pthread_join(client_t, NULL);
 			}
 
 		}
 
+		printf("\nTerminado\n");
+		printf("\nClientes atendidos: %d\n", (clientesAtendidos-1));
+		printf("\nClientes no atendidos: %d\n", clientesNoAtendidos);
+		printf("\nPromedio Km de recorrido: %d\n", promedio(recorridos));
+		// printf("\nMotorizados retirados: %d \n",motorizadosRetirados);
+
+
 		free(params);
 		free(motorizados);
 		free(restaurantes);
+		free(recorridos);
 	}
 }

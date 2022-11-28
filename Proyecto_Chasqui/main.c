@@ -86,7 +86,7 @@ int nearestRepartidor(struct ElementoGrilla rest){
 		struct ElementoGrilla mot = motorizados[i];
 		int dist = distance(mot.posX,mot.posY,rest.posX,rest.posY);
 		bool unavailableMot = !mot.busy || !mot.left; 
-		if(dist < maxDist){
+		if(dist < minValue){
 			minValue = dist;
 			if(unavailableMot){
 				reject = false;

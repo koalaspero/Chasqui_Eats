@@ -73,18 +73,18 @@ void print_help(){
  * ----------------------------
  *   Retorna el indice del motorizado mas cercano y con una distancia menor a la distancia maxima especificada.
  *
- *   clie: un objeto que corresponde al cliente que sera atendido 
+ *   rest: un objeto que corresponde al restuarante que sera atendido 
  *
  *   returns: motIndex
  */
-int nearestRepartidor(struct ElementoGrilla clie){
+int nearestRepartidor(struct ElementoGrilla rest){
 	int minValue = INT_MAX;
 	int motIndex = 0;
 	bool reject = true;
 
 	for(int i = 0; i < numMotorizados; i++){
 		struct ElementoGrilla mot = motorizados[i];
-		int dist = distance(mot.posX,mot.posY,clie.posX,clie.posY);
+		int dist = distance(mot.posX,mot.posY,rest.posX,rest.posY);
 		bool unavailableMot = !mot.busy || !mot.left; 
 		if(dist < maxDist){
 			minValue = dist;
@@ -129,16 +129,17 @@ void* envio_motorizado(void *moto_args){
 	int toRestaurant = distance(mot.posX,mot.posY,rest.posX,rest.posY);
 	int toClient = distance(rest.posX,rest.posY,cliente.posX,cliente.posY);
 
-	// pthread_mutex_lock(&mutex);
 	motorizados[motoIndex].busy = true;
 	motorizados[motoIndex].posX = cliente.posX;
 	motorizados[motoIndex].posY = cliente.posY;
 	sleep(1);
 	motorizados[motoIndex].envios++;
-	// pthread_mutex_unlock(&mutex);
 	
 	printf(" %s, en espera por comida\n", mot.name);
-	sleep(1);
+	
+	int cookinTime = rand() % 3 + 1;
+	sleep(cookinTime);
+	
 	printf(" %s, Comida lista\n", cliente.name);
 
 	sleep(toRestaurant);
@@ -193,6 +194,7 @@ void* cargar_cliente(){
     struct ElementoGrilla rest = restaurantes[restIndex];
 
     int motoIndex = nearestRepartidor(rest);
+    motorizados[motoIndex].busy = true;
 
     double orderVal = 100 * ((double)rand() / (double)RAND_MAX);
     bool cond = randProb(70);
@@ -209,6 +211,7 @@ void* cargar_cliente(){
 		pthread_create (&moto_t, NULL,envio_motorizado,args);
     	// envio_motorizado(cliente, indexList);
     }else{
+    	motorizados[motoIndex].busy = false;
     	clientesNoAtendidos++;
     }
 

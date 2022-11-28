@@ -85,18 +85,16 @@ int nearestRepartidor(struct ElementoGrilla rest){
 	for(int i = 0; i < numMotorizados; i++){
 		struct ElementoGrilla mot = motorizados[i];
 		int dist = distance(mot.posX,mot.posY,rest.posX,rest.posY);
-		bool unavailableMot = !mot.busy || !mot.left; 
-		if(dist < minValue){
+		bool unavailableMot = mot.busy || mot.left; 
+		if( (dist < minValue) && !unavailableMot){
 			minValue = dist;
-			if(unavailableMot){
-				reject = false;
-				motIndex = i;
-			}
+			reject = false;
+			motIndex = i;
 		}
 	}
 
 
-	if(reject){
+	if(reject || minValue > maxDist){
 		return -1;
 	}
 
@@ -206,7 +204,6 @@ void* cargar_cliente(){
 		args->restIndex = restIndex;
 
 		pthread_create (&moto_t, NULL,envio_motorizado,args);
-    	// envio_motorizado(cliente, indexList);
     }else{
     	motorizados[motoIndex].busy = false;
     	clientesNoAtendidos++;
@@ -316,10 +313,14 @@ int main(int argc, char **argx){
 		while(motorizadosDisponibles>0){
 			pthread_t client_t;
 			sleep(interval);
+			if(clientesNoAtendidos >= 100 && maxDist < params[0]){
+				maxDist++;
+			}
 			if(tossCoin()){
-				sleep(2);
+				if(interval < 2){
+					sleep(2);
+				}
 				pthread_create(&client_t, NULL, &cargar_cliente, NULL);
-				// pthread_join(client_t, NULL);
 			}
 
 		}

@@ -151,20 +151,17 @@ void* envio_motorizado(void *moto_args){
 	motorizados[motoIndex].recorrido += toClient;
 
 	printf(" %s, Comida entregada\n", mot.name);
-
-	motorizados[motoIndex].busy = false;
 	
-	printf(" %s, En espera por nuevo pedido\n", mot.name);
-	
-	if(motorizados[motoIndex].envios > 2){
-		if(tossCoin()){
-			motorizados[motoIndex].left = true;
-			motorizados[motoIndex].busy = true;
-			motorizadosDisponibles--;
-			recorridos[motorizadosRetirados] = motorizados[motoIndex].recorrido;
-			motorizadosRetirados++;
-			printf(" %s %d, Me retiro a mi casa\n", mot.name, mot.envios);
-		}
+	if(motorizados[motoIndex].envios > 2 && tossCoin()){
+		motorizados[motoIndex].left = true;
+		motorizados[motoIndex].busy = true;
+		motorizadosDisponibles--;
+		recorridos[motorizadosRetirados] = motorizados[motoIndex].recorrido;
+		motorizadosRetirados++;
+		printf(" %s , Me retiro a mi casa\n", mot.name);
+	}else{
+		motorizados[motoIndex].busy = false;
+		printf(" %s, En espera por nuevo pedido\n", mot.name);
 	}
 }
 

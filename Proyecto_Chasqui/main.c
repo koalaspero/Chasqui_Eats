@@ -108,9 +108,8 @@ int nearestRepartidor(struct ElementoGrilla clie){
  * ----------------------------
  *   Operaciones del motorizado en la realizacion de un pedido.
  *
- *   cliente: un objeto que corresponde al cliente que sera atendido 
- *	 indexList: arreglo con los indices del restaurante y motorizado que atienden al cliente.
- *
+ *   moto_args: parametros pasados a un hilo de motorizado en el que encuentra un cliente y los indices 
+ *				para el motorizado y restaurante involucrados.
  */
 void* envio_motorizado(void *moto_args){
 
